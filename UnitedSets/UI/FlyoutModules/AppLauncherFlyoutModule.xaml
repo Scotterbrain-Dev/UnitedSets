@@ -1,0 +1,34 @@
+<Grid
+    x:Class="UnitedSets.UI.FlyoutModules.AppLauncherFlyoutModule"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    MinWidth="320">
+    <StackPanel Spacing="8" Padding="4">
+        <Border BorderThickness="1"
+                CornerRadius="8"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                Padding="16">
+            <StackPanel Spacing="12">
+                <TextBlock Text="App Launcher" FontWeight="SemiBold" FontSize="16"/>
+                <Button x:Name="LaunchExeButton"
+                        Click="LaunchExeClick"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Padding="12,10">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <SymbolIcon Symbol="OpenFile" VerticalAlignment="Center"/>
+                        <StackPanel Spacing="2" VerticalAlignment="Center">
+                            <TextBlock Text="Launch App (.exe)" FontWeight="SemiBold"/>
+                            <TextBlock Text="Browse for an executable to open as a new tab"
+                                       Opacity="0.65" FontSize="12"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</Grid>

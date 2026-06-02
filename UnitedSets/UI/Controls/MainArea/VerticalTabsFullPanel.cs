@@ -42,6 +42,10 @@ namespace UnitedSets.UI.Controls.MainArea;
                         Style=`(Style)App.Current.Resources["ToolbarButton"]`
                         MainWindow=`UnitedSetsApp.Current.MainWindow`
                     />
+                    <AppLauncherButton
+                        CenterV
+                        Style=`(Style)App.Current.Resources["ToolbarButton"]`
+                    />
                     if (`HasTab`)
                     {
                         <Button
