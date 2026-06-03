@@ -24,6 +24,24 @@ jobs:
       - name: Restore
         run: dotnet restore UnitedSets/UnitedSets.csproj -p:Platform=x64
 
+      - name: Patch Get.UI.Data.WASDK missing native files
+        shell: pwsh
+        run: |
+          $nuget = "$env:USERPROFILE\.nuget\packages"
+          $wasdk = (Get-ChildItem "$nuget\microsoft.windowsappsdk" | Sort-Object Name -Descending | Select-Object -First 1).FullName
+          $target = "$nuget\get.ui.data.wasdk\1.0.7\lib\net8.0-windows10.0.22621\Get.UI.Data.WASDK"
+          foreach ($rid in 'win-x64','win-arm64','win-x86') {
+            $src = "$wasdk\runtimes\$rid\native\WebView2Loader.dll"
+            $dst = "$target\runtimes\$rid\native"
+            New-Item -ItemType Directory -Force $dst | Out-Null
+            if (Test-Path $src) {
+              Copy-Item $src $dst
+              Write-Host "Patched $rid"
+            } else {
+              Write-Warning "WebView2Loader.dll not found for $rid at $src"
+            }
+          }
+
       - name: Build
         run: dotnet build UnitedSets/UnitedSets.csproj -c DebugUnpackaged -p:Platform=x64 --no-restore
 
