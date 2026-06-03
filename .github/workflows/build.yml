@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master", "claude/**" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore UnitedSets/UnitedSets.csproj -p:Platform=x64
+
+      - name: Build
+        run: dotnet build UnitedSets/UnitedSets.csproj -c DebugUnpackaged -p:Platform=x64 --no-restore
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: UnitedSets-x64
+          path: UnitedSets/bin/x64/DebugUnpackaged/
+          if-no-files-found: error

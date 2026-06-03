@@ -61,7 +61,7 @@
         <!--<PackageReference Include="Get.XAMLTools" Version="1.0.5" />-->
         <PackageReference Include="Enums.NET" Version="4.0.1" />
         <PackageReference Include="Get.EasyCSharp.Generator" Version="1.2.0" />
-        <PackageReference Include="Get.UI.Data.WASDK" Version="1.0.11" />
+        <PackageReference Include="Get.UI.Data.WASDK" Version="1.0.7" />
         <PackageReference Include="Get.UI.WinUI" Version="1.1.0" />
         <PackageReference Include="Get.XAMLTools.Generator" Version="1.0.5" />
         <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
