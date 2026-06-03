@@ -1,0 +1,14 @@
+<Project>
+  <!--
+    Get.UI.Data.WASDK v1.0.7 declares native WebView2Loader.dll files in its package
+    metadata but ships without them. Remove any copy-local items that don't exist on
+    disk so MSBuild doesn't fail with MSB3030. The real WebView2Loader.dll is supplied
+    by the transitive Microsoft.WindowsAppSDK runtime dependencies.
+  -->
+  <Target Name="RemoveMissingNativeAssets" BeforeTargets="CopyFilesToOutputDirectory">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)"
+        Condition="!Exists('%(ReferenceCopyLocalPaths.FullPath)')" />
+    </ItemGroup>
+  </Target>
+</Project>
