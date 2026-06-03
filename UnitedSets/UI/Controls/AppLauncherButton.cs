@@ -1,7 +1,7 @@
 namespace UnitedSets.UI.Controls;
 
 [QuickMarkup("""
-    <root Padding=5 ToolTipService_ToolTip="App Launcher">
+    <root Padding=5>
         <FluentIconElement Symbol=Apps20 Margin=`new(-2,-6,0,0)` />
     </root>
     """)]
@@ -14,6 +14,7 @@ partial class AppLauncherButton : Button
     public AppLauncherButton()
     {
         Init();
+        ToolTipService.SetToolTip(this, "App Launcher");
         _flyout.Content = new AppLauncherFlyoutModule();
         _flyout.Opened += (_, _) => _flyoutOpen = true;
         _flyout.Closed += (_, _) =>
