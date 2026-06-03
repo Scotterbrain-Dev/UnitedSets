@@ -1,14 +1,21 @@
 <Project>
   <!--
-    Get.UI.Data.WASDK v1.0.7 declares native WebView2Loader.dll files in its package
-    metadata but ships without them. Remove any copy-local items that don't exist on
-    disk so MSBuild doesn't fail with MSB3030. The real WebView2Loader.dll is supplied
-    by the transitive Microsoft.WindowsAppSDK runtime dependencies.
+    Get.UI.Data.WASDK v1.0.7 declares WebView2Loader.dll as companion content but
+    ships without it. Remove it from all copy-local item groups before MSBuild tries
+    to copy it and fails with MSB3030.
   -->
-  <Target Name="RemoveMissingNativeAssets" BeforeTargets="CopyFilesToOutputDirectory">
+  <Target Name="RemoveMissingGetUIDataWASDKNative"
+          AfterTargets="ResolvePackageAssets;ResolveAssemblyReferences"
+          BeforeTargets="CopyFilesToOutputDirectory;_CopyFilesMarkedCopyLocal;_CopyOutOfDateSourceItemsToOutputDirectory">
     <ItemGroup>
       <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)"
-        Condition="!Exists('%(ReferenceCopyLocalPaths.FullPath)')" />
+        Condition="$([System.String]::Copy('%(Filename)').Equals('WebView2Loader'))" />
+      <ContentWithTargetPath Remove="@(ContentWithTargetPath)"
+        Condition="$([System.String]::Copy('%(Filename)').Equals('WebView2Loader'))" />
+      <None Remove="@(None)"
+        Condition="$([System.String]::Copy('%(Filename)').Equals('WebView2Loader'))" />
+      <Content Remove="@(Content)"
+        Condition="$([System.String]::Copy('%(Filename)').Equals('WebView2Loader'))" />
     </ItemGroup>
   </Target>
 </Project>
