@@ -39,6 +39,10 @@ namespace UnitedSets.UI.Controls.MainArea;
                     Style=`(Style)App.Current.Resources["ToolbarButton"]`
                     MainWindow=`UnitedSetsApp.Current.MainWindow`
                 />
+                <AppLauncherButton
+                    CenterV
+                    Style=`(Style)App.Current.Resources["ToolbarButton"]`
+                />
             </HStack>
         </UnitedSetsDragRegion>
         <OrientedStack Grid_Row=1 Orientation=Horizontal StretchH>

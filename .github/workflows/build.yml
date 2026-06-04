@@ -1,0 +1,67 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master", "claude/**" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore UnitedSets/UnitedSets.csproj -p:Platform=x64
+
+      - name: Patch Get.UI.Data.WASDK missing native files
+        shell: pwsh
+        run: |
+          # The Get.UI.Data.WASDK.pri declares WebView2Loader.dll as a native dependency
+          # but v1.0.7 ships without it. Source from Microsoft.Web.WebView2 (transitive dep).
+          $nuget = "$env:USERPROFILE\.nuget\packages"
+          $target = "$nuget\get.ui.data.wasdk\1.0.7\lib\net8.0-windows10.0.22621\Get.UI.Data.WASDK"
+
+          # Find Microsoft.Web.WebView2 in cache (restored as transitive dep of WASDK)
+          $webview2 = (Get-ChildItem "$nuget\microsoft.web.webview2" -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1)?.FullName
+          if (-not $webview2) {
+            # Not in cache yet — download it directly
+            $ver = "1.0.2651.64"
+            $nupkg = "$env:TEMP\webview2.nupkg"
+            Invoke-WebRequest "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2/$ver" -OutFile $nupkg
+            Expand-Archive $nupkg "$env:TEMP\webview2" -Force
+            $webview2 = "$env:TEMP\webview2"
+          }
+          Write-Host "Source: $webview2"
+
+          foreach ($rid in 'win-x64','win-arm64','win-x86') {
+            $src = "$webview2\runtimes\$rid\native\WebView2Loader.dll"
+            $dst = "$target\runtimes\$rid\native"
+            New-Item -ItemType Directory -Force $dst | Out-Null
+            if (Test-Path $src) {
+              Copy-Item $src $dst
+              Write-Host "Patched $rid"
+            } else {
+              Write-Warning "WebView2Loader.dll not found for $rid at $src"
+            }
+          }
+
+      - name: Build
+        run: dotnet build UnitedSets/UnitedSets.csproj -c DebugUnpackaged -p:Platform=x64 --no-restore
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: UnitedSets-x64
+          path: UnitedSets/bin/x64/DebugUnpackaged/
+          if-no-files-found: error

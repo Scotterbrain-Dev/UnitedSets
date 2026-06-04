@@ -24,12 +24,18 @@ namespace UnitedSets.UI.Controls.MainArea;
                     SelectedItem=`UnitedSetsApp.Current.SelectedTab`
                     SelectedItem=>`SelectedTabBindback`
                     @SelectionChanged+=`TabSelectionChanged?.Invoke()`
-                    TabStripHeader=<MainWindowControlButton
-                        CenterV Width=32 Height=32
-                        Margin=`new(5,0,0,0)`
-                        Style=`(Style)App.Current.Resources["ToolbarButton"]`
-                        MainWindow=`UnitedSetsApp.Current.MainWindow`
-                    />
+                    TabStripHeader=<StackPanel Orientation=Horizontal>
+                        <MainWindowControlButton
+                            CenterV Width=32 Height=32
+                            Margin=`new(5,0,0,0)`
+                            Style=`(Style)App.Current.Resources["ToolbarButton"]`
+                            MainWindow=`UnitedSetsApp.Current.MainWindow`
+                        />
+                        <AppLauncherButton
+                            CenterV Width=32 Height=32
+                            Style=`(Style)App.Current.Resources["ToolbarButton"]`
+                        />
+                    </StackPanel>
                     TabStripFooter=<AddTabSplitButton
                         Canvas_ZIndex=8
                         Margin=`new(0,0,20,0)`

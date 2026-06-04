@@ -1,0 +1,21 @@
+<Project>
+  <!--
+    Get.UI.Data.WASDK v1.0.7 declares WebView2Loader.dll as companion content but
+    ships without it. Remove it from all copy-local item groups before MSBuild tries
+    to copy it and fails with MSB3030.
+  -->
+  <Target Name="RemoveMissingGetUIDataWASDKNative"
+          AfterTargets="ResolvePackageAssets;ResolveAssemblyReferences"
+          BeforeTargets="CopyFilesToOutputDirectory;_CopyFilesMarkedCopyLocal;_CopyOutOfDateSourceItemsToOutputDirectory">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)"
+        Condition="$([System.String]::Copy('%(Filename)').Equals('WebView2Loader'))" />
+      <ContentWithTargetPath Remove="@(ContentWithTargetPath)"
+        Condition="$([System.String]::Copy('%(Filename)').Equals('WebView2Loader'))" />
+      <None Remove="@(None)"
+        Condition="$([System.String]::Copy('%(Filename)').Equals('WebView2Loader'))" />
+      <Content Remove="@(Content)"
+        Condition="$([System.String]::Copy('%(Filename)').Equals('WebView2Loader'))" />
+    </ItemGroup>
+  </Target>
+</Project>
